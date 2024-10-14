@@ -1,0 +1,1 @@
+flask --app e-shop run --port=8080 --debug

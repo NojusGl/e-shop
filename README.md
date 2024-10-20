@@ -7,6 +7,7 @@ Second project of non-relational databases
 
 > [!TIP]
 To run python virtual environment for tests, use commands below:
+
 For windows:
 > python -m venv ./.venv
 > ./.venv/Scripts/activate.ps1

@@ -5,7 +5,7 @@ Second project of non-relational databases
 > [!NOTE]
 > **run.sh** for linux/mac, **run.bat** - for windows machines
 
-[!TIP]
+> [!TIP]
 To run python virtual environment for tests, use commands below:
 For windows:
 > python -m venv ./.venv

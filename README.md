@@ -9,9 +9,9 @@ Second project of non-relational databases
 To run python virtual environment for tests, use commands below
 
 For windows:
-> python -m venv ./.venv
-./.venv/Scripts/activate.ps1
-pip3 install -r requirements.txt 
+> python -m venv ./.venv\
+./.venv/Scripts/activate.ps1\
+pip3 install -r requirements.txt\ 
 pytest ./test/test_api.py
 
 For linux/mac:

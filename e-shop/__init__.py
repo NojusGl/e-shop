@@ -11,7 +11,7 @@ def create_app():
     products = db.products
     orders = db.orders
 
-    #Register a new client.
+    # Register a new client.
     @app.route('/clients', methods=['PUT'])
     def set_client():
         reqBody = request.json
@@ -27,6 +27,36 @@ def create_app():
         clients.insert_one(client)
 
         return {"message": "Client is registered"}, 200
+      
+    # Get client details.
+    @app.route('/clients/<clientId>', methods=['GET'])
+    def get_client():
+        pass
+
+    # Delete a client and its associated orders.
+    @app.route('/clients/<clientId>', methods=['DEL'])
+    def delete_client():
+        pass
+    
+    # Create a new order.
+    @app.route('/orders', methods=['PUT'])
+    def set_order():
+        pass
+
+    # Get client orders.
+    @app.route('/clients/<clientId>/orders', methods=['PUT'])
+    def get_client_orders():
+        pass
+    
+    # Get number of orders placed.
+    @app.route('/statistics/orders/total', methods=['GET'])
+    def get_orders_count():
+        pass
+
+    # Get total value of orders placed.
+    @app.route('/statistics/orders/totalValue', methods=['GET'])
+    def get_orders_value():
+        pass
     
     # put – Register a new product.
     @app.route('/products', methods=['PUT'])
@@ -82,5 +112,5 @@ def create_app():
     @app.route('/cleanup', methods=['POST'])
     def cleanup ():
         pass
-
+      
     return app

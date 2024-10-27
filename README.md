@@ -6,15 +6,20 @@ Second project of non-relational databases
 > **run.sh** for linux/mac, **run.bat** - for windows machines
 
 > [!TIP]
-To run python virtual environment for tests, use commands below:
+To run python virtual environment for tests, use commands below
+
 For windows:
-> python -m venv ./.venv
-> ./.venv/Scripts/activate.ps1
-> pip3 install -r requirements.txt
-> pytest ./test/test_api.py
+```powershell
+python -m venv ./.venv
+./.venv/Scripts/activate.ps1 
+pip3 install -r requirements.txt
+pytest ./test/test_api.py
+```
 
 For linux/mac:
-> python -m venv ./.venv
-> source ./.venv/Scripts/activate.bat
-> pip3 install -r requirements.txt
-> pytest ./test/test_api.py
+```shell
+python -m venv ./.venv
+source ./.venv/Scripts/activate.bat
+pip3 install -r requirements.txt
+pytest ./test/test_api.py
+```

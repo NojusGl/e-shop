@@ -28,7 +28,7 @@ def create_app():
             clients.insert_one(client)
             return {"id": id}, 201
         return {"message": "Invalid input, missing name or email"}, 400
-    
+ 
     # Get client details.
     #NOTE there is a problem with how it displays client info
     @app.route('/clients/<clientId>', methods=['GET'])
@@ -72,7 +72,7 @@ def create_app():
     # Delete a product.
     @app.route('/product/<productId>', methods=['DEL'])
     def delete_product():
-        pass
+      pass
     
     # Create a new order.
     @app.route('/orders', methods=['PUT'])
@@ -98,16 +98,6 @@ def create_app():
     def get_client_orders():
         pass
     
-    # Get top 10 clients by number of orders placed.
-    @app.route('/statistics/top/clients', methods=['GET'])
-    def get_top10_clients_by_orders():
-        pass
-    
-    # Get top 10 products by total quantity ordered.
-    @app.route('/statistics/top/products', methods=['GET'])
-    def get_top10_products_by_ordered_quantity():
-        pass
-    
     # Get number of orders placed.
     @app.route('/statistics/orders/total', methods=['GET'])
     def get_orders_count():
@@ -129,10 +119,59 @@ def create_app():
 
         return {"totalValue": totalValue}, 200
 
-    # Delete all data from the database.
-    @app.route('/cleanup', methods=['POST'])
-    def delete_database():
-        pass
-    
-    return app
+    # put – Register a new product.
+    @app.route('/products', methods=['PUT'])
+    def reg_prod ():
+        reqBody = request.json
+        
+        id = reqBody.get("id")
+        name = reqBody.get("name")
+        category = reqBody.get("category")
+        price = reqBody.get("price")
 
+        if ((id is None) or (name is None) or (category is None) or (price is None)):
+            return {"message": "Invalid data, or some of the values are missing"}, 400
+        elif (products.find_one({"id": id})):
+            return {"message": "This ID is already taken"}, 400
+        else:
+            product = {
+                "id": id,
+                "name": name,
+                "category": category,
+                "price": price
+            }
+
+            products.insert_one(product)
+            return {"message": "Product is registered"}, 200
+
+    # get – List all products, optionally in category.
+    @app.route('/products', methods=['GET'])
+    def list_prod ():
+        pass
+
+    # get – Get product details
+    @app.route('/products/<productId>', methods=['GET'])
+    def get_prod_info ():
+        pass
+
+    # del – Delete a product
+    @app.route('/products/<productId>', methods=['DELETE'])
+    def del_prod ():
+        pass
+
+    # get – Get top 10 clients by number of orders placed.
+    @app.route('/statistics/top/clients', methods=['GET'])
+    def top_clients ():
+        pass
+
+    # get – Get top 10 products by total quantity ordered.
+    @app.route('/statistics/top/products', methods=['GET'])
+    def top_prod ():
+        pass
+
+    # post – Delete all data from the database
+    @app.route('/cleanup', methods=['POST'])
+    def cleanup ():
+        pass
+      
+    return app

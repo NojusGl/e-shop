@@ -32,7 +32,6 @@ def create_app():
         return {"message": "Invalid input, missing name or email"}, 400
  
     # Get client details.
-    #NOTE there is a problem with how it displays client info
     @app.route('/clients/<clientId>', methods=['GET'])
     def get_client(clientId):
         client = clients.find_one({"id": str(clientId)})
@@ -55,46 +54,6 @@ def create_app():
              clients.delete_one({"id": str(clientId)})  
              return {"message": "Client deleted"}, 204
         return {"message": "Client not found"}, 404
-
-    # Register a new product.  
-    @app.route('/products', methods=['PUT'])
-    def reg_prod ():
-        reqBody = request.json
-
-        id = reqBody.get("id")
-        name = reqBody.get("name")
-        category = reqBody.get("category")
-        price = reqBody.get("price")
-
-        if ((id is None) or (name is None) or (category is None) or (price is None)):
-            return {"message": "Invalid data, or some of the values are missing"}, 400
-        elif (products.find_one({"id": id})):
-            return {"message": "This ID is already taken"}, 400
-        else:
-            product = {
-                "id": id,
-                "name": name,
-                "category": category,
-                "price": price
-            }
-
-            products.insert_one(product)
-            return {"message": "Product is registered"}, 200
-
-    # List all products, optionally in category.  
-    @app.route('/products', methods=['GET'])  
-    def get_products():
-        pass
-
-    # Get product details.
-    @app.route('/product/<productId>', methods=['GET'])
-    def get_product():
-        pass
-    
-    # Delete a product.
-    @app.route('/product/<productId>', methods=['DEL'])
-    def delete_product():
-      pass
     
     # Create a new order.
     @app.route('/orders', methods=['PUT'])
@@ -216,19 +175,11 @@ def create_app():
     # get – Get top 10 clients by number of orders placed.
     @app.route('/statistics/top/clients', methods=['GET'])
     def top_clients ():
-        # pasiimu visus klientus (panašu, tiesiog nueinu į db.clients, ir ten jau po vieną imu)
-        # pasižiūriu, kiek kiekvienas klientas turi užsakymų get_client_orders()
-        # surikiuoju pagal užsakymus
-        # pasiimu dešimt nuo viršaus
         pass
 
     # get – Get top 10 products by total quantity ordered.
     @app.route('/statistics/top/products', methods=['GET'])
     def top_prod ():
-        # kaip susisieti produktą su užsakymu kiekiu?
-        # eiti per visus order'ius, ir kiekvienam produktui skaičiuoti, kiek kartų jis buvo užsakytas?
-        # (aš galiu žinoti, kiek apskritai yra užsakymų iškviesdamas get_orders_count())
-        # bet ar man apskritai to reikia?
         pass
 
     # post – Delete all data from the database

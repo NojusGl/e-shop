@@ -113,7 +113,7 @@ def create_app():
         if ((name is None) or (category is None) or (price is None)):
             return {"message": "Invalid data, or some of the values are missing"}, 400
         elif (id is None):
-            id = random.randint(0, 65536)
+            id = str(random.randint(0, 65536))
             while (products.find_one({"id": id})):
                 id = random.randint(0, 65536)
         else:
@@ -175,12 +175,111 @@ def create_app():
     # get – Get top 10 clients by number of orders placed.
     @app.route('/statistics/top/clients', methods=['GET'])
     def top_clients ():
-        pass
+        pipeline = [
+            {
+                "$group": {
+                    "_id": "$clientId",
+                    "totalOrders": {
+                        "$sum": 1
+                        }
+                }
+            },
+            {
+                "$sort": {
+                    "totalOrders": -1
+                }
+            },
+            {
+                "$limit": 10
+            },
+            {
+                "$lookup": {
+                    "from": "clients",
+                    "localField": "_id",
+                    "foreignField": "id",
+                    "as": "client_info"
+                }
+            },
+            {
+                "$unwind": "$client_info"
+            },
+            {
+                "$project": {
+                    "_id": False,
+                    "id": "$_id",
+                    "name": "$client_info.name",
+                    "totalOrders": 1
+                }
+            }
+        ]
+
+        top_clients = list(orders.aggregate(pipeline))
+
+        formatted_clients = [
+            {
+                "id": client["id"],
+                "name": client["name"],
+                "totalOrders": client["totalOrders"]
+            } for client in top_clients
+        ]
+
+        return jsonify(formatted_clients)
 
     # get – Get top 10 products by total quantity ordered.
     @app.route('/statistics/top/products', methods=['GET'])
     def top_prod ():
-        pass
+        pipeline = [
+            {
+                "$unwind": "$items"
+            },
+            {
+                "$group": {
+                    "_id": "$items.productId",
+                    "quantity": {
+                        "$sum": "$items.quantity"
+                    }
+                }
+            },
+            {
+                "$sort": {
+                    "quantity": -1
+                }
+            },
+            {
+                "$limit": 10
+            },
+            {
+                "$lookup": {
+                    "from": "products",
+                    "localField": "_id",
+                    "foreignField": "id",
+                    "as": "product_info"
+                }
+            },
+            {
+                "$unwind": "$product_info"
+            },
+            {
+                "$project": {
+                    "_id": False,
+                    "productId": "$_id",
+                    "name": "$product_info.name",
+                    "quantity": 1
+                }
+            }
+        ]
+
+        top_products = list(orders.aggregate(pipeline))
+
+        formatted_prods = [
+            {
+                "productId": prod["productId"],
+                "name": prod["name"],
+                "quantity": prod["quantity"]
+            } for prod in top_products
+        ]
+
+        return jsonify(formatted_prods)
 
     # post – Delete all data from the database
     @app.route('/cleanup', methods=['POST'])

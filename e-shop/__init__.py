@@ -55,9 +55,29 @@ def create_app():
         return {"message": "Client not found"}, 404
 
     # Register a new product.  
-    @app.route('/products', methods=['PUT'])  
-    def set_product():
-        pass
+    @app.route('/products', methods=['PUT'])
+    def reg_prod ():
+        reqBody = request.json
+
+        id = reqBody.get("id")
+        name = reqBody.get("name")
+        category = reqBody.get("category")
+        price = reqBody.get("price")
+
+        if ((id is None) or (name is None) or (category is None) or (price is None)):
+            return {"message": "Invalid data, or some of the values are missing"}, 400
+        elif (products.find_one({"id": id})):
+            return {"message": "This ID is already taken"}, 400
+        else:
+            product = {
+                "id": id,
+                "name": name,
+                "category": category,
+                "price": price
+            }
+
+            products.insert_one(product)
+            return {"message": "Product is registered"}, 200
 
     # List all products, optionally in category.  
     @app.route('/products', methods=['GET'])  

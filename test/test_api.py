@@ -102,11 +102,11 @@ def test_placing_orders_and_statistics():
     top_clients = get_top_clients()
 
     assert len(top_clients) == 2
-    assert top_clients[0]['id'] == client_id
+    assert top_clients[0]['id'] == str(client_id)
     assert top_clients[0]['name'] == "John Smith"
     assert top_clients[0]['totalOrders'] == 4
 
-    assert top_clients[1]['id'] == client2_id
+    assert top_clients[1]['id'] == str(client2_id)
     assert top_clients[1]['name'] == "Jane Doe"
     assert top_clients[1]['totalOrders'] == 2
 

@@ -94,7 +94,6 @@ def create_app():
         return {"total": ordersCount}, 200
 
     # Get total value of orders placed.
-    #NOTE need products for proper testing
     @app.route('/statistics/orders/totalValue', methods=['GET'])
     def get_orders_value():
         cursor = orders.find({})

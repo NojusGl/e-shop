@@ -84,8 +84,22 @@ def create_app():
 
     # Get client orders.
     @app.route('/clients/<clientId>/orders', methods=['PUT'])
-    def get_client_orders():
-        pass
+    def get_client_orders(clientId):
+        client = clients.find_one({"id": str(clientId)})
+        if client != None:
+            cursor = orders.find({"clientId": str(clientId)})
+            items = []
+            for order in cursor:
+                items.append(order["items"])
+
+            order = {
+                    "clientId": clientId,
+                    "items": items
+            }
+
+            return order, 200
+
+        return {"message": "Client not found"}, 404
     
     # Get number of orders placed.
     @app.route('/statistics/orders/total', methods=['GET'])

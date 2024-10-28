@@ -12,6 +12,12 @@ def create_app():
     clients = db.clients
     products = db.products
     orders = db.orders
+    
+    def generateId(container):
+        id = None
+        while (id == None or container.find_one({"id": id})):
+            id = str(random.randint(0, 65536))
+        return id
 
     # Register a new client.
     @app.route('/clients', methods=['PUT'])
@@ -21,14 +27,16 @@ def create_app():
         name = reqBody.get("name")
         email = reqBody.get("email")
 
-        if len(id) != 0 and len(name) != 0 and len(email) != 0:
+        if name != None and email != None:
+            if id == None:
+                id = generateId(clients)
             client = {
                 "id": id,
                 "name": name,
                 "email": email
             }
             clients.insert_one(client)
-            return {"id": id}, 201
+            return {"id": int(id)}, 201
         return {"message": "Invalid input, missing name or email"}, 400
  
     # Get client details.
@@ -46,7 +54,7 @@ def create_app():
         return {"message": "Client not found"}, 404
 
     # Delete a client and its associated orders.
-    @app.route('/clients/<clientId>', methods=['DEL'])
+    @app.route('/clients/<clientId>', methods=['DELETE'])
     def delete_client(clientId):
         client = clients.find_one({"id": str(clientId)})
         if client != None:
@@ -63,7 +71,7 @@ def create_app():
         items = reqBody.get("items")
         client = clients.find_one({"id": str(clientId)})
         if client != None:
-            if len(clientId) != 0 and len(items) != 0:
+            if clientId != None and items != None:
                 order = {
                     "clientId": clientId,
                     "items": items
@@ -93,7 +101,7 @@ def create_app():
         totalValue = 0.0
 
         for order in cursor:
-            items = order[items]
+            items = order["items"]
             for item in items:
                 price = float(products.find_one({"id": item["productId"]})["price"])
                 totalValue += price * int(item["quantity"])
@@ -113,9 +121,7 @@ def create_app():
         if ((name is None) or (category is None) or (price is None)):
             return {"message": "Invalid data, or some of the values are missing"}, 400
         elif (id is None):
-            id = str(random.randint(0, 65536))
-            while (products.find_one({"id": id})):
-                id = random.randint(0, 65536)
+            id = generateId(products)
         else:
             if (products.find_one({"id": id})):
                 return {"message": "The ID is already taken"}, 400
@@ -127,20 +133,16 @@ def create_app():
             "price": price
         }
         products.insert_one(product)
-        return {"message": "Product is registered"}, 200
+        return {"id": id}, 201
 
     # get – List all products, optionally in category.
     @app.route('/products', methods=['GET'])
     def list_prod ():
-        reqBody = request.get_json(silent=True)
-        if (reqBody is not None):
-            category = reqBody.get("category")
-            if (category is None):
-                return {"message": "JSON passed, without category (don't pass the JSON in order to see all the products)"}, 400
-            else:
-                prods = list(products.find({"category": category}))
-        else:
+        category = request.args.get('category')
+        if (category is None):
             prods = list(products.find())
+        else:
+            prods = list(products.find({"category": category}))
         
         for prod in prods:
             prod.pop("_id")

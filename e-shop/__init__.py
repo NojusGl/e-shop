@@ -73,7 +73,7 @@ def create_app():
         if client != None:
             if clientId != None and items != None:
                 order = {
-                    "clientId": clientId,
+                    "clientId": str(clientId),
                     "items": items
                 }
 
